@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>claendartest</title>
+    <base href="/spa">
+
+
+    <style type="text/css">
+        #calendar {
+        }
+
+            #calendar ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+            }
+                #calendar ul.weekdays {
+                    height: 40px;
+                    background: #8e352e;
+                    margin:0;
+                }
+
+                    #calendar ul.weekdays li {
+                        text-align: center;
+                        text-transform: uppercase;
+                        line-height: 20px;
+                        border: none !important;
+                        padding: 10px 6px;
+                        color: #fff;
+                        font-size: 13px;
+                    }
+            #calendar li {
+                display: block;
+                float: left;
+                width: 14.342%;
+                padding: 5px;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                margin-right: -1px;
+                margin-bottom: -1px;
+            }
+            #calendar .nondays li {
+                background: green;
+            }
+            #calendar .days li:hover {
+                background: #d3d3d3;
+            }
+
+        @@media(max-width: 768px) {
+            #calendar .weekdays, #calendar .other-month {
+                display: none;
+            }
+            #calendar li {
+                height: auto !important;
+                border: 1px solid #ededed;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: -1px;
+            }
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <script src="systemjs.config.js"></script>
+    <script>
+        System.import('main.js').catch(function (err) { console.error(err); });
+    </script>
+</head>
+<body>
+
+
+    <div class="container body-content">
+
+        <my-app>Loading AppComponent content here ...</my-app>
+    </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+﻿
+<div class="row">
+    <div class="col-xs-6 col-sm-2 col-md-1">
+        <button class="btn btn-primary btn-block">Prev</button>
+    </div>
+    <div class="col-xs-6 col-sm-2 col-md-1">
+        <button class="btn btn-primary btn-block">Next</button>
+    </div>
+    <div class="col-xs-12 col-sm-2 col-md-offset-1 col-md-6">
+        <h4 class="text-center">{{CMonth.StartDate.format('MMMM YYYY') }}</h4>
+    </div>
+    <div class="col-xs-4 col-sm-2 col-md-1">
+        <button class="btn btn-primary btn-block">Week</button>
+    </div>
+    <div class="col-xs-4 col-sm-2 col-md-1">
+        <button class="btn btn-primary btn-block disabled" disabled>Month</button>
+    </div>
+    <div class="col-xs-4 col-sm-2 col-md-1">
+        <button class="btn btn-primary btn-block">Day</button>
+    </div>
+    
+</div>
+<div class="row">
+    <div id="calendar" class="col-sm-12">
+        <ul class="weekdays">
+            <li>Sunday</li>
+            <li>Monday</li>
+            <li>Tuesday</li>
+            <li>Wednesday</li>
+            <li>Thursday</li>
+            <li>Friday</li>
+            <li>Saturday</li>
+        </ul>
+        <ul class="days" *ngFor="let w of CMonth.WeeksInMonth">
+            <li *ngFor="let d of w.DaysInWeek" [ngClass]="{'other-month':!d.InMonth }">
+                <span [ngClass]="{'badge':d.InMonth }" class="badge">{{d.CDay.date()}}</span>
+            </li>
+        </ul>
+    </div>
+</div>
