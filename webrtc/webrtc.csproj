@@ -156,7 +156,6 @@
     <Compile Include="Models\Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TempExtensions.cs" />
-    <Compile Include="ToAgoDateTime.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\WebRTCData.mdf" />
@@ -177,14 +176,6 @@
     <Content Include="images\search.gif" />
     <Content Include="images\spinner.gif" />
     <Content Include="JavaScript.js" />
-    <Content Include="js\1-helper.js" />
-    <Content Include="js\2-rtc-functions.js" />
-    <Content Include="js\4-ui.js" />
-    <Content Include="js\answer-socket.js" />
-    <Content Include="js\master-socket.js" />
-    <Content Include="js\RTCPeerConnection-Helpers.js" />
-    <Content Include="js\RTCPeerConnection.js" />
-    <Content Include="js\socket.io.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
