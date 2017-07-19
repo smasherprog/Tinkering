@@ -1,0 +1,35 @@
+﻿<div class="row">
+    <div class="col-md-6">
+        <form [formGroup]="heroForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-group">
+                <h2>Create a room</h2>
+                <div>
+                    <label for="full-name">Your name:</label>
+                    <input type="text" formControlName="Name">
+                    <small>Enter your full name.</small>
+                </div>
+                <div>
+                    <label for="room-name">Room name:</label>
+                    <input type="text" formControlName="Room">
+                    <small>Enter human-readable room name.</small>
+                </div>
+                <div>
+                    <label for="partner-email">Partner email:</label>
+                    <input type="text" formControlName="Token">
+                    <small>Enter your partner's email or unique token/word.</small>
+                </div>
+                <button class="btn btn-primary" type="submit">Create Room</button>
+            </div>
+        </form>
+    </div>
+</div>
+<h4>{{message}}</h4>
+<div class="row">
+    <div class="col-md-6">
+        <video #clientvideo style="width:100%;"></video>
+    </div>
+    <div class="col-md-6">
+        <video #remotevideo style="width:100%;" autoplay></video>
+    </div>
+</div>
+
