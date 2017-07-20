@@ -1,7 +1,7 @@
 ﻿import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 import { AppComponent }   from './app.component';
 
@@ -13,7 +13,7 @@ import { routing } from './app.routing';
         routing,
         FormsModule,
         ReactiveFormsModule,
-        HttpClientModule
+        HttpModule
     ],
     declarations: [AppComponent],
     bootstrap: [AppComponent]

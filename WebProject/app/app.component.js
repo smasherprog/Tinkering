@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@angular/core");
 const forms_1 = require("@angular/forms");
 const http_1 = require("@angular/http");
-require("rxjs/add/operator/map");
-require("rxjs/add/operator/toPromise");
+const RX_1 = require("rxjs/RX");
 class RoomRequest {
     constructor() {
         this.Name = '';
@@ -34,6 +33,7 @@ let AppComponent = class AppComponent {
     constructor(fb, http) {
         this.fb = fb;
         this.http = http;
+        this.Rooms = new Array();
         this.heroForm = this.fb.group({
             Name: ['', forms_1.Validators.required],
             Room: ['', forms_1.Validators.required],
@@ -41,12 +41,28 @@ let AppComponent = class AppComponent {
         });
     }
     ngOnDestroy() {
+        if (this.sub)
+            this.sub.unsubscribe();
     }
     ngOnInit() {
+        navigator.getUserMedia({ audio: true, video: true }, (stream) => {
+            this.clientVideo.nativeElement.srcObject = stream;
+            this.clientStream = stream;
+            this.clientVideo.nativeElement.play();
+        }, function () {
+            //location.reload();
+        });
+        this.sub = RX_1.Observable.interval(1000 * 5).subscribe(a => {
+            this.http.post('/WebRTC/SearchPublicRooms', {}).subscribe((a) => {
+                var response = a.json();
+                document.title = response.availableRooms + ' available public rooms, ' + response.publicActiveRooms + ' active public rooms and ' + response.privateAvailableRooms + ' available private rooms';
+                this.Rooms = response.rooms;
+            });
+        });
     }
     waitUntilRemoteStreamStartFlowing() {
         document.title = 'Waiting for remote stream flow!';
-        if (!(this.remoteVideo.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || this.remoteVideo.paused || this.remoteVideo.currentTime <= 0)) {
+        if (!(this.remoteVideo.nativeElement.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || this.remoteVideo.nativeElement.paused || this.remoteVideo.nativeElement.currentTime <= 0)) {
             this.isGotRemoteStream = true;
             document.title = 'Finally got the remote stream!';
         }
@@ -86,8 +102,9 @@ let AppComponent = class AppComponent {
                         roomToken: this.roomToken
                     };
                     this.http.post('/WebRTC/PostICE', data).subscribe((a) => {
-                        if (a.ParticipantName) {
-                            this.message = "Connected to " + a.ParticipantName;
+                        var response = a.json();
+                        if (response.ParticipantName) {
+                            this.message = "Connected to " + response.ParticipantName;
                         }
                     });
                 }
@@ -95,11 +112,11 @@ let AppComponent = class AppComponent {
             this.peerConnection.onaddstream = (ev) => {
                 if (ev) {
                     document.title = 'Got a clue for remote video stream!';
-                    this.clientVideo.pause();
-                    this.clientVideo.hide();
-                    this.remoteVideo.show();
-                    this.remoteVideo.play();
-                    this.remoteVideo.src = ev.stream;
+                    this.clientVideo.nativeElement.pause();
+                    this.clientVideo.nativeElement.hide();
+                    this.remoteVideo.nativeElement.show();
+                    this.remoteVideo.nativeElement.play();
+                    this.remoteVideo.nativeElement.srcObject = ev.stream;
                     document.title = 'Waiting for remote stream flow!';
                 }
             };
@@ -196,6 +213,69 @@ let AppComponent = class AppComponent {
             }
             else {
                 setTimeout(() => { this.waitForParticipant(); }, 3000);
+            }
+        });
+    }
+    createAnswer(sdpResponse) {
+        this.RTCInit();
+        document.title = 'Creating answer...';
+        var sdp;
+        try {
+            sdp = JSON.parse(sdpResponse);
+            this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+        }
+        catch (e) {
+            sdp = sdpResponse;
+            this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+        }
+        this.peerConnection.createAnswer((sessionDescription) => {
+            this.peerConnection.setLocalDescription(sessionDescription);
+            document.title = 'Created answer successfully!';
+            sdp = JSON.stringify(sessionDescription);
+            var data = {
+                sdp: sdp,
+                userToken: this.userToken,
+                roomToken: this.roomToken
+            };
+            this.http.post('/WebRTC/PostSDP', data).subscribe((a) => {
+                document.title = 'Posted answer successfully!';
+            });
+        }, (e) => { console.error(e); });
+    }
+    ;
+    waitForOffer() {
+        document.title = 'Waiting for offer...';
+        var data = {
+            userToken: this.userToken,
+            roomToken: this.roomToken
+        };
+        this.http.post('/WebRTC/GetSDP', data).subscribe((a) => {
+            if (a !== false) {
+                document.title = 'Got offer...';
+                this.createAnswer(a.sdp);
+            }
+            else
+                setTimeout(this.waitForOffer, 100);
+        });
+    }
+    ;
+    joinroom(room) {
+        if (!this.clientStream) {
+            return;
+        }
+        var data = {
+            roomToken: room.Token,
+            participant: "testname"
+        };
+        this.http.post('/WebRTC/JoinRoom', data).subscribe((res) => {
+            var a = res.json();
+            if (a.participantToken) {
+                this.userToken = a.participantToken;
+                document.title = 'Connected with ' + a.friend + '!';
+                this.checkRemoteICE();
+                setTimeout(() => {
+                    this.waitForOffer();
+                }, 3000);
             }
         });
     }

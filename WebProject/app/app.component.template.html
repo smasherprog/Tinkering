@@ -22,6 +22,9 @@
             </div>
         </form>
     </div>
+    <div class="col-md-6">
+        <button *ngFor="let room of Rooms" (click)="joinroom(room);">{{room.Name}}</button>
+    </div>
 </div>
 <h4>{{message}}</h4>
 <div class="row">

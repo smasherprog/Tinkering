@@ -8,17 +8,12 @@ namespace MvcWithAngular2.Controllers
 {
     public class WebRTCController : Controller
     {
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        readonly WebRTCDataContext _db = new WebRTCDataContext();
+            readonly WebRTCDataContext _db = new WebRTCDataContext();
 
         [HttpPost]
-        public JsonResult CreateRoom(string ownerName, string roomName, string partnerEmail = null)
+        public JsonResult CreateRoom(string Name, string Room, string partnerEmail = null)
         {
-            if (ownerName.IsEmpty() || roomName.IsEmpty()) return Json(false);
+            if (Name.IsEmpty() || Room.IsEmpty()) return Json(false);
 
             back:
             string token = RandomNumbers.GetRandomNumbers();
@@ -31,8 +26,8 @@ namespace MvcWithAngular2.Controllers
             var room = new Room
             {
                 Token = token,
-                Name = roomName.GetValidatedString(),
-                OwnerName = ownerName.GetValidatedString(),
+                Name = Room.GetValidatedString(),
+                OwnerName = Name.GetValidatedString(),
                 OwnerToken = ownerToken,
                 LastUpdated = DateTime.Now,
                 SharedWith = partnerEmail.IsEmpty() ? "Public" : partnerEmail,
@@ -41,12 +36,14 @@ namespace MvcWithAngular2.Controllers
 
             _db.Rooms.Add(room);
             _db.SaveChanges();
-
-            return Json(new
+            return new JsonResult
             {
-                roomToken = room.Token,
-                ownerToken = room.OwnerToken
-            });
+                Data = new
+                {
+                    roomToken = room.Token,
+                    ownerToken = room.OwnerToken
+                }
+            };
         }
 
         [HttpPost]
@@ -73,12 +70,14 @@ namespace MvcWithAngular2.Controllers
             room.Status = Status.Active;
 
             _db.SaveChanges();
-
-            return Json(new
+            return new JsonResult
             {
-                participantToken,
-                friend = room.OwnerName
-            });
+                Data = new
+                {
+                    participantToken,
+                    friend = room.OwnerName
+                }
+            };
         }
 
 
@@ -93,9 +92,9 @@ namespace MvcWithAngular2.Controllers
                 {
                     rooms = rooms.Select(r => new
                     {
-                        roomName = r.Name,
-                        ownerName = r.OwnerName,
-                        roomToken = r.Token
+                        Name = r.Name,
+                        Room = r.OwnerName,
+                        Token = r.Token
                     }),
                     availableRooms = rooms.Count(),
                     publicActiveRooms = _db.Rooms.ToList().Count(r => r.Status == Status.Active && r.LastUpdated.AddMinutes(1) > DateTime.Now && r.SharedWith == "Public"),
