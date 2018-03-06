@@ -6,9 +6,27 @@ using System.Web.WebPages;
 
 namespace MvcWithAngular2.Controllers
 {
+    public static class TempExtensions
+    {
+        public static string GetValidatedString(this string text)
+        {
+            return text.Replace("-equal", "=").Replace("_plus_", "+").Replace("--", " ").Replace("-qmark", "?").Replace("-nsign", "#").Replace("-n", " <br />").Replace("-lt", "&lt;").Replace("-gt", "&gt;").Replace("-amp", "&").Replace("__", "-");
+        }
+
+    }
+    public class RandomNumbers
+    {
+        internal static string GetRandomNumbers(int length = 6)
+        {
+            var values = new byte[length];
+            var rnd = new Random();
+            rnd.NextBytes(values);
+            return values.Aggregate(string.Empty, (current, v) => current + v.ToString());
+        }
+    }
     public class WebRTCController : Controller
     {
-            readonly WebRTCDataContext _db = new WebRTCDataContext();
+        readonly WebRTCDataContext _db = new WebRTCDataContext();
 
         [HttpPost]
         public JsonResult CreateRoom(string Name, string Room, string partnerEmail = null)

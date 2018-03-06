@@ -1,22 +1,26 @@
-﻿import { NgModule }      from '@angular/core';
+﻿import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+//angular modules
 
-import { AppComponent }   from './app.component';
+import { HttpModule, RequestOptions } from '@angular/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+import { WebRTCComponent }   from './app.component';
 
 import { routing } from './app.routing';
 
 @NgModule({
     imports: [
         BrowserModule,
-        routing,
+        HttpModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule
+        RouterModule,
+        routing
     ],
-    declarations: [AppComponent],
-    bootstrap: [AppComponent]
+    declarations: [WebRTCComponent],
+    bootstrap: [WebRTCComponent]
 })
 
 export class AppModule {}
